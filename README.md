@@ -8,9 +8,9 @@ A Bash script for interop between git and vss
 # Purpose
 I had to use VSS and I found it was hurting my productivity, I started using Git alongside VSS and found keeping them in synch a chore, so I created some scripts to help
 
-###* Alternative Purpose*
-Alot of the commands such as **ssclone**, **ssadd** and **sscommit** might be useful for anyone who wants to use pure VSS but is more used to git commands. Really all they are is 
-VSS command line wrapped up with additional work to adjust for VSS command line style 
+###*Alternative Purpose*
+*Alot of the commands such as **ssclone**, **ssadd** and **sscommit** might be useful for anyone who wants to use pure VSS but is more used to git commands. Really all they are is 
+VSS command line wrapped up with additional work to adjust for VSS command line style*
 
 # Before you start
 - You will **need** to [install git](http://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for windows (personally I installed git extensions)
@@ -22,8 +22,8 @@ VSS command line wrapped up with additional work to adjust for VSS command line 
 ##Initialisation 
 - Open "gitvssinterop.sh" and Modify the correct variables (see [Bash Variables](https://github.com/chrispepper1989/GitVssInterop#bash-variables))
 - Add "gitvssinterop.sh" in the method you prefer
-  -e.g. open "~/.bashrc" and add source "path/to/gitvssinterop.sh"
--run "ssinit"
+  - e.g. open "~/.bashrc" and add source "path/to/gitvssinterop.sh"
+- run "ssinit"
 
 At this point you have a git repo with all the SS source code :-)
 
@@ -39,7 +39,7 @@ The attempt has been to make the syntax familiar to users of git
 For the most part you can therefore just use git, I personally use [git-diffall](https://github.com/thenigan/git-diffall) with master and rarely have much to do with source safe. In theory provided you always do an sspull before sspush all merge issues etc will be handled via git
 
 
-- use **ssdiff** when you want to double check my scripts are working :-)
+- Use **ssdiff** when you want to double check my scripts are working :-)
 
 
 As long as you stick to using git and only running these commands you *should'nt* need any of the other commands but see API for if you find yourself stuck
@@ -54,15 +54,18 @@ The most likley "fixit" command you will need is
 SSNAME=
 
 ####Your source safe project details
-Set to VSS source safe project e.g. : $ProjectFolder (visible in the VSS GUI when folder is selected "Contents of <CURRENT_SOURCE_SAFE_PROJECT>"
 CURRENT_SOURCE_SAFE_PROJECT=
+
+*Set to VSS source safe project e.g. : $ProjectFolder (visible in the VSS GUI when folder is selected "Contents of <CURRENT_SOURCE_SAFE_PROJECT>"*
 ##Where does your project live
 PROJ_DIR="/c/Users/you/Documents/Projects/YourProject"
 
 *<TODO: set on ssinit>*
 
 ####Your Commit Details
+
 ACTIVE_TRACK_REF=15
+
 PROJECT_NAME=
 
 Currently the VSS comment is created by going:
@@ -75,12 +78,12 @@ SS_COMMENT="$PROJECT_NAME - TGR: $ACTIVE_TRACK_REF  \n\n$GIT_COMMENT"
 
 in the important place.
 
-Where GIT_COMMENT is "git log --pretty=format:"%h %s" --no-merges -n 3" 
+Where GIT_COMMENT is *"git log --pretty=format:"%h %s" --no-merges -n 3"*
 
 This way the VSS comment is basically just a summary of your git comments, flavoured with the formal needs of the comment
-This is by far the area that needs the most editing that is not currently easily done. *TODO* move comment into a function
+This is by far the area that needs the most editing that is not currently easily done. *(TODO move comment into a function)*
 
-In my case there is 0 requirement for anything other then the TGR number, hence the lack of work
+In my case there is zero requirement for anything other then the TGR number, hence the lack of work
 
 **NOTE** yes its currently geared for TGR, feel free to modify
 
@@ -89,7 +92,7 @@ The attempt has been to make the syntax familiar to users of git and for it to b
 
 ##ssamend
 This command is for when you have modified something in upstream and want to add it without going through git and sspush.
-its **not for amending a comment in the git sense, instead its more of a "oops I need to add more stuff"**
+its **not for amending a comment in the git sense, instead its more of a "I need to add this to SS but I don't want to add it to git" or "oops I have managed to confuse sspush"**
 
 It basically works out what is different locally (git diff HEAD^) and then commits those changes to source safe
 
@@ -121,7 +124,7 @@ Runs "ss Diff -R" but then transforms it into a more readable output
 I am evolving this as I use it, as such some features may not work "out of the box" as they have been updated after the fact and not updated. I appreciate any issues raised against these, I will at some point start actively unit testing.
 
 
-#Depreciated SysVars
+#Depreciated Bash Variables
 Originally when using the branch method I created a way of doing "hard diffs" this basically grabbed a new clone of SS and used beyondcompare to diff the folders. This hasn't been used in a while because I recommend using ssdiff instead and normal [git-diffall](https://github.com/thenigan/git-diffall) when you want to do a folder compare. 
 
 ##Your BeyondCompare Session
