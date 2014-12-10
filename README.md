@@ -9,8 +9,8 @@ A Bash script for interop between git and vss
 I had to use VSS and I found it was hurting my productivity, I started using Git alongside VSS and found keeping them in synch a chore, so I created some scripts to help
 
 ###*Alternative Purpose*
-*Alot of the commands such as **ssclone**, **ssadd** and **sscommit** might be useful for anyone who wants to use pure VSS but is more used to git commands. Really all they are is 
-VSS command line wrapped up with additional work to adjust for VSS command line style*
+*Alot of the commands* such as **ssclone**, **ssadd**, **ssdelete** and **sscommit** might be useful for anyone who wants to use pure VSS but is more used to git commands. Really all they are is 
+VSS command line wrapped up with additional work to adjust for VSS command line style
 
 # Before you start
 - You will **need** to [install git](http://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for windows (personally I installed git extensions)
