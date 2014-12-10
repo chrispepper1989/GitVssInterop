@@ -13,31 +13,37 @@ Alot of the commands such as "ssclone", "ssadd" and "sscommit" might be useful f
 VSS command line wrapped up with additional work to adjust for VSS command line style 
 
 # Before you start
-- You will **need** to [install git][http://git-scm.com/book/en/v2/Getting-Started-Installing-Git] for windows (personally I installed git extensions)
-- You *might* want to grab [ConEmu][https://code.google.com/p/conemu-maximus5/] as frankly without it, windows cmd line is almost unusable
+- You will **need** to [install git](http://git-scm.com/book/en/v2/Getting-Started-Installing-Git) for windows (personally I installed git extensions)
+- You *might* want to grab [ConEmu](https://code.google.com/p/conemu-maximus5/) as frankly without it, windows cmd line is almost unusable
 - Have quick acces to git bash (for example I have my defult ConEmu set to git bash)
 
 # How To
 
 ##Initialisation 
-- Open "gitvssinterop.sh" and Modify the correct variables (see Bash Variables)
+- Open "gitvssinterop.sh" and Modify the correct variables (see [Bash Variables](https://github.com/chrispepper1989/GitVssInterop#bash-variables))
 - Add "gitvssinterop.sh" in the method you prefer
---e.g. open "~/.bashrc" and add source "path/to/gitvssinterop.sh"
+  -e.g. open "~/.bashrc" and add source "path/to/gitvssinterop.sh"
 -run "ssinit"
 
 At this point you have a git repo with all the SS source code :-)
 
 ##General Usuage
 The attempt has been to make the syntax familiar to users of git
-use **sspull** to grab the latest from SS and merge with git (its *recommended* you run this inside master or run **masterpullss**)
-use **sspush** to push SS
+
+- use **sspull** to grab the latest from SS and merge with git (its *recommended* you run this inside master or run **masterpullss**)
+- use **sspush** to push SS
+
 **NOTE** currently there is nothing stopping you from doing a sspush before sspull and overwriting changes, **make sure you always sspull before sspush**
+
 
 For the most part you can therefore just use git, I personally use git-diffall with master and rarely have much to do with source safe. In theory provided you always do an sspull before sspush all merge issues etc will be handled via git
 
+
 use *ssdiff* when you want to double check my scripts are working :-)
 
+
 As long as you stick to using git and only running these commands you *should'nt* need any of the other commands but see API for if you find yourself stuck
+
 
 The most likley "fixit" command you will need is 
 ssamend
