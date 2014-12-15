@@ -7,6 +7,7 @@ alias sspush=sspushDir
 alias sspull=sspullDir
 alias ssinit=ssinitDir
 
+alias sspushDiffFrom="sspushDiffFromDir"
 alias ssclone="ss get "$CURRENT_SOURCE_SAFE_PROJECT" -W -R -Q -Y$SSNAME -I-N"
 alias ssdelete="ss Delete "$DELETED_FILES" -Y$SSNAME -I-N"
 alias initgitss=ssinit
@@ -423,9 +424,9 @@ sspullDir()
 	git pull	
 	
 }
-sspushDir()
+sspushDiffFromDir()
 {
-	ssreset
+	sreset
 	if [ ! -d ".git" ]; then
 	  echo "Must be ran from root git/ss rep"
 	  exit;
@@ -438,10 +439,9 @@ sspushDir()
 	
 
 	#figure out files that need to go into source safe
-	updateModDelAddVars origin
+	updateModDelAddVars $1
 	
-	#ok now make origin up to date -this keeps git happy :)-
-	git push
+
 	
 	pushd $SOURCE_SAFE_DIR
 	git checkout master
@@ -453,9 +453,16 @@ sspushDir()
 	sscommitone fullGitHistory.githistory
 	
 	#now print the message needed for the TGR comment
-	printDiffInfo
+	printTGRInfo
 	git checkout not_master
 	popd
+}
+
+sspushDir()
+{
+	sspushDiffFromDir origin
+	#ok now make origin up to date -this keeps git happy :)-
+	git push
 
 }
 

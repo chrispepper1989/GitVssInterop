@@ -5,6 +5,22 @@ GitVssInterop
 
 A Bash script for interop between git and vss
 
+#What does it do?
+The basic idea is to keep one "mirror" of the VSS source that is treated as the "origin" by git. In the latest version the default is the double directory method, which in a nutshell:
+
+
+- Gets the latest SS code and puts it in a directory <PROJECT>_Upstream (this will be your VSS mirror)
+- Initializes a git repo and adds & commits everything 
+-- With source safe history
+-- Note: This is why .gitignore_global needs to be set up correctly See: Initialisation
+- Clones that repo into <PROJECT>_git 
+-call sspull and sspush instead of git pull (origin) and git push (origin)
+--**Warning** If you do call git pull, git push accidentally then it will mess up the logic but you should be able to fix it with sspushDiffFrom
+
+see API for more details
+
+Note: Postfixes are configurable
+
 # Purpose
 I had to use VSS and I found it was hurting my productivity, I started using Git alongside VSS and found keeping them in synch a chore, so I created some scripts to help
 
@@ -20,6 +36,7 @@ VSS command line wrapped up with additional work to adjust for VSS command line 
 # How To
 
 ##Initialisation 
+- Append [Visual Studio.gitignore](https://github.com/github/gitignore/blob/master/VisualStudio.gitignore") to your gitignore_global with one extra "*.githistory"
 - Open "gitvssinterop.sh" and Modify the correct variables (see [Bash Variables](https://github.com/chrispepper1989/GitVssInterop#bash-variables))
 - Add "gitvssinterop.sh" in the method you prefer
   - e.g. open "~/.bashrc" and add source "path/to/gitvssinterop.sh"
@@ -101,6 +118,13 @@ This uses ss get to grab all of the code within vss, making it writeable and lea
 *note* this may ask you for a password when it is ran depending on your VSS set up, it should be possible to embed the password *TODO*
 ##sspush
 sspush works out what is different from your repo and "upstream", records it (updateModDelAddVars) (e.g. the folder) and then does a git push. At this point it jumps into "upstream" and runs "ssfullcommit"
+
+##sspushDiffFrom
+sspush basically works by calling this with the argument "origin". If you have accidentally called "git push" and therefore made origin in sync with you but not VSS then you can use this command to correct the mistake. 
+
+Check the VSS to find out the last commit you put into SS (this will be in both the comments and VSS's copy of fullgithistory ) then call 
+
+sspushDiffFrom <commit>
 
 ##sspull
 sspull jumps into "upstream" runs an "ssclone", commits it into git and then jumps back and runs a "git pull"
