@@ -8,9 +8,9 @@ alias sspull=sspullDir
 alias ssinit=ssinitDir
 
 alias sspushDiffFrom="sspushDiffFromDir"
-alias ssclone="ss get "$CURRENT_SOURCE_SAFE_PROJECT" -W -R -Q -Y$SSNAME -I-N"
-alias ssdelete="ss Delete "$DELETED_FILES" -Y$SSNAME -I-N"
-alias initgitss=ssinit
+
+
+
 
 #----These Need Setting:
 ##Your VSS user name
@@ -18,7 +18,7 @@ SSNAME=
 
 ##Your source safe project details
 CURRENT_SOURCE_SAFE_PROJECT=
-PROJ_DIR="/c/you/ukcpep/Documents/Projects/YourProject"
+CURRENT_PROJ_DIR="/c/you/ukcpep/Documents/Projects/YourProject"
 
 ##Your Commit Details
 ACTIVE_TRACK_REF=15
@@ -29,9 +29,9 @@ PROJECT_NAME=
 #----SysVars
 CURRENT_PROJ_DIR=
 GIT_POSTFIX="_git"
-GIT_DIR=$PROJ_DIR$GIT_POSTFIX
+GIT_DIR=$CURRENT_PROJ_DIR$GIT_POSTFIX
 SOURCE_SAFE_POSTFIX="_SSUpstream"
-SOURCE_SAFE_DIR=$PROJ_DIR$SOURCE_SAFE_POSTFIX
+SOURCE_SAFE_DIR=$CURRENT_PROJ_DIR$SOURCE_SAFE_POSTFIX
 
 
 #---colours
@@ -41,13 +41,28 @@ green='\e[0;32m'
 lgreen='\e[1;32m'
 NC='\e[0m'#NoColor
 
+
+
+
 #----Depreciated SysVars
 REF_APPEND="_REF"
 ##Your BeyondCompare Session
+#misc settings
 #its better to create a beyond compare session so you can set it up how you like
 BEYOND_COMPARE_SESSION=
 alias bcompare="START / \"C:\Program Files (x86)\Beyond Compare 3\BCompare.exe\""
 #---functions
+
+ssdelete()
+{
+	ss Delete $1 -Y$SSNAME -I-Y
+}
+
+ssclone()
+{
+	ss get "$CURRENT_SOURCE_SAFE_PROJECT" -W -R -Q -Y$SSNAME -I-N
+}
+
 ssdiff()
 {
 	ss Diff -R > SSDiffReport.txt
@@ -192,6 +207,7 @@ ssadd()
 
 
 	#cp to folder
+	echo "File is: $new_file"
 	echo "Directory is: $directory"
 	ssresetq
 	test=$(ss CP $directory 2>&1 | grep -c 'exist' 2>&1)
@@ -293,7 +309,7 @@ sspullBranch()
 	
 	##grab the recent history for those files & everything else seperately	
 	NOW=$(date)
-	SSFILEHISTORY=$(ss History . $FILES -#3)
+	SSFILEHISTORY=$(ss History . $FILES -#3 -O-)
 	SSHISTORY=$(ss History . -#3)
 	
 	##now add & commit those files with a comment
@@ -307,8 +323,20 @@ sspullBranch()
 	git pull	
 	
 }
-#ammend directly within *upstream* (Don't make a habit of using this)
-#this is for the specific use case where you have modified something within the upstream folder that you want to add directly to source safe
+
+createSSComment()
+{
+   
+	echo "opening vim"
+
+	printf "%s - %s: %s \n\n--------------------- \n%s" "$PROJECT_NAME" "$NAME_OF_REF" "$ACTIVE_TRACK_REF" "$GIT_COMMENT" > sscomment.txt
+
+	vim sscomment.txt -c ":0" 
+
+	SS_COMMENT=$(cat sscomment.txt)
+	echo "you wrote $SS_COMMENT" 
+	rm sscomment.txt
+}
 ssamend()
 {
 	updateModDelAddVars HEAD^
@@ -317,20 +345,20 @@ ssamend()
 ssfullcommit()
 {
 	#check the file in with latest git comments but keep files as writeable
-	#--TODO-- read -p "Please enter the TGR this commit relates to: " TGR 
 
+	createSSComment
 	
 	#Add each file (and possible directory)
 	printf "\n---------------------------------------------------\n"
 	printf "Adding new files \n->\n $ADDED_FILES"
 	printf "\n---------------------------------------------------\n"
-	SS_COMMENT="$PROJECT_NAME - TGR: $ACTIVE_TRACK_REF  \n\n$GIT_COMMENT"	
+		
 	ssadd $ADDED_FILES
-	
+	ssresetq
 	printf "\n---------------------------------------------------\n"
 	printf "Deleting old files \n->\n $DELETED_FILES"
-	printf "\n---------------------------------------------------\n"
-	ss Delete $DELETED_FILES -Y$SSNAME -I-N
+	printf "\n---------------------------------------------------\n"	
+	ssdelete $DELETED_FILES 
 	
 	#Loop through the files, checking in and out from correct directory	
 	printf "\n---------------------------------------------------\n"
@@ -351,8 +379,8 @@ ssinitDir()
 		exit;
 	fi
 		
-	mkdir $PROJ_DIR
-	cd $PROJ_DIR
+	mkdir $CURRENT_PROJ_DIR
+	cd $CURRENT_PROJ_DIR
 	mkdir $SOURCE_SAFE_DIR
 	
 	cd $SOURCE_SAFE_DIR
@@ -390,6 +418,8 @@ sspullDir()
 	  exit;
 	fi
 	
+	ssreset
+	
 	##figure out files I have changed
 	FILES=$( git diff --name-only origin/master) 
 	
@@ -410,7 +440,7 @@ sspullDir()
 	
 	##grab the recent history for those files & everything else seperately	
 	NOW=$(date)
-	SSFILEHISTORY=$(ss History . $FILES -#3)
+	SSFILEHISTORY=$(ss History . $FILES -#3 -O-)
 	SSHISTORY=$(ss History . -#3)
 	
 	##now add & commit those files with a comment
@@ -443,7 +473,7 @@ sspushDiffFromDir()
 	
 
 	
-	pushd $SOURCE_SAFE_DIR
+	cd $SOURCE_SAFE_DIR
 	git checkout master
 	git log --no-merges > fullGitHistory.githistory
 	ssfullcommit
@@ -453,9 +483,11 @@ sspushDiffFromDir()
 	sscommitone fullGitHistory.githistory
 	
 	#now print the message needed for the TGR comment
-	printTGRInfo
+	printDiffInfo
+	sscommitone fullGitHistory.githistory
 	git checkout not_master
-	popd
+	cd $GIT_DIR
+
 }
 
 sspushDir()
