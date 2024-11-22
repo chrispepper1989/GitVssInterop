@@ -1,6 +1,21 @@
 GitVssInterop
 =============
 
+# A note from 2024
+Please, dont use this :D if a company is trying to make you use VSS, just refuse until they migrate to git/mecurial. There is absolutely no reason to have to work around this insanely difficult, unsafe source control system.
+
+If you need ammunition to make this change there is plenty here:
+https://developsense.com/visual-sourcesafe-version-control-unsafe-at-any-speed
+
+but my headlines would be:
+- It massively exposes the business to risk from malicious users
+- it exposes risk in the form that people can lock files and go on holiday, massively increasing the chance of a single point of failure and potentially grinding software updates to a hault
+- it does not have merge strategies that will make any sense to a modern software engineer, massively impacting the agility you can move with and increasing risk of regression
+- It does not have rollback strategies that will make any sense to a modern software engineer,massively impacting the ability of a company to roll back in the case of any P1 issues
+- it is not familiar to any modern software engineer, massively impacting the agility you can move with
+- There are many software engineers, myself included, that would probably not take a job at your company if they knew you were still relying on VSS with no plans to remove it, drastically affecting your hiring pool. 
+
+
 # Description
 
 A Bash script for interop between git and vss
